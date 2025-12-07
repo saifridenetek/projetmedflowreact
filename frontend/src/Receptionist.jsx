@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useAuth } from './contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { appointmentService, userService, consultationService, prescriptionService, paymentService } from './services/api';
@@ -36,7 +36,7 @@ export default function Receptionist() {
 
   const renderReceptionistDashboard = () => (
     <div style={{ padding: '30px' }}>
-      <h1 style={{ margin: '0 0 10px 0', color: '#2d3748', fontSize: '1.8rem' }}>Tableau de bord r�ceptionniste</h1>
+      <h1 style={{ margin: '0 0 10px 0', color: '#2d3748', fontSize: '1.8rem' }}>Tableau de bord réceptionniste</h1>
       <p style={{ color: '#718096', marginBottom: '30px' }}>Bienvenue, {user?.firstName} {user?.lastName}</p>
       
       {/* Cartes statistiques */}
@@ -55,9 +55,9 @@ export default function Receptionist() {
           borderLeft: '4px solid #ff9800'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
-            <span style={{ fontSize: '2rem', marginRight: '15px' }}>??</span>
+            <span style={{ fontSize: '2rem', marginRight: '15px' }}>📅</span>
             <div>
-              <h3 style={{ margin: '0', color: '#ff9800', fontSize: '0.9rem', fontWeight: '600' }}>RDV PROGRAMM�S</h3>
+              <h3 style={{ margin: '0', color: '#ff9800', fontSize: '0.9rem', fontWeight: '600' }}>RDV PROGRAMMÉS</h3>
               <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2d3748' }}>{appointments.length}</div>
             </div>
           </div>
@@ -71,7 +71,7 @@ export default function Receptionist() {
           borderLeft: '4px solid #4caf50'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
-            <span style={{ fontSize: '2rem', marginRight: '15px' }}>??</span>
+            <span style={{ fontSize: '2rem', marginRight: '15px' }}>👥</span>
             <div>
               <h3 style={{ margin: '0', color: '#4caf50', fontSize: '0.9rem', fontWeight: '600' }}>PATIENTS EN ATTENTE</h3>
               <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2d3748' }}>{new Set(appointments.filter(a => a.status === 'pending').map(a => a.patient?.id)).size}</div>
@@ -94,11 +94,11 @@ export default function Receptionist() {
               {appointments.map(appt => (
                 <li key={appt.id} style={{ padding: '12px 0', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <strong>{appt.patient?.firstName} {appt.patient?.lastName}</strong> � {new Date(appt.appointment_datetime).toLocaleString('fr-FR')}
+                    <strong>{appt.patient?.firstName} {appt.patient?.lastName}</strong> à {new Date(appt.appointment_datetime).toLocaleString('fr-FR')}
                   </div>
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                     <div style={{ marginRight: '8px', fontSize: '0.9rem', color: appt.paid ? '#10b981' : '#64748b', fontWeight: 700 }}>
-                      {appt.paid ? 'Pay�' : 'Non pay�'}
+                      {appt.paid ? 'Payé' : 'Non payé'}
                     </div>
                     <button onClick={async () => { await handleOpenPatientConsultations(appt.patient); }} style={{ padding: '6px 8px', background: '#10b981', color: 'white', border: 'none', borderRadius: '6px' }}>Consultations</button>
                     <button onClick={async () => { await handleOpenPatientPrescriptions(appt.patient); }} style={{ padding: '6px 8px', background: '#f59e0b', color: 'white', border: 'none', borderRadius: '6px' }}>Ordonnances</button>
@@ -123,7 +123,7 @@ export default function Receptionist() {
 
   // Connect to server-sent events for real-time updates
   useEffect(() => {
-    const base = '${API_BASE_URL}';
+    const base = `${API_BASE_URL}`;
     const es = new EventSource(`${base}/notifications/stream`);
 
     es.onmessage = (e) => {
@@ -505,7 +505,7 @@ export default function Receptionist() {
                 }}>
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                      <span style={{ fontSize: '1.2rem', marginRight: '10px' }}>??</span>
+                      <span style={{ fontSize: '1.2rem', marginRight: '10px' }}>👤</span>
                       <div>
                         <strong style={{ color: '#2d3748' }}>
                           {appointment.patient?.firstName} {appointment.patient?.lastName}
@@ -516,14 +516,14 @@ export default function Receptionist() {
                       </div>
                     </div>
                     <div style={{ color: '#718096', fontSize: '0.9rem' }}>
-                      ?? {new Date(appointment.appointment_datetime).toLocaleDateString('fr-FR')} � {new Date(appointment.appointment_datetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                      📅 {new Date(appointment.appointment_datetime).toLocaleDateString('fr-FR')} à {new Date(appointment.appointment_datetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                     </div>
                     <div style={{ color: '#718096', fontSize: '0.9rem', marginTop: '5px' }}>
-                      ?? {appointment.reason}
+                      📋 {appointment.reason}
                     </div>
                     {appointment.notes && (
                       <div style={{ color: '#718096', fontSize: '0.9rem', marginTop: '5px' }}>
-                        ?? {appointment.notes}
+                        📝 {appointment.notes}
                       </div>
                     )}
                   </div>
@@ -663,15 +663,15 @@ export default function Receptionist() {
     return (
       <div style={{ padding: '30px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <h1 style={{ margin: '0', color: '#2d3748' }}>Factures � Pay�es</h1>
+          <h1 style={{ margin: '0', color: '#2d3748' }}>Factures • Payées</h1>
         </div>
         <div style={{ marginBottom: '18px', color: '#64748b' }}>
-          <strong style={{ color: '#2d3748' }}>{paidCount}</strong> factures pay�es � Total : <strong style={{ color: '#10b981' }}>{totalAmount.toFixed(2)} �</strong>
+          <strong style={{ color: '#2d3748' }}>{paidCount}</strong> factures payées • Total : <strong style={{ color: '#10b981' }}>{totalAmount.toFixed(2)} €</strong>
         </div>
 
         {paidAppointments.length === 0 ? (
           <div style={{ padding: '20px', background: 'white', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-            <p style={{ color: '#718096' }}>Aucune facture pay�e pour le moment.</p>
+            <p style={{ color: '#718096' }}>Aucune facture payée pour le moment.</p>
           </div>
         ) : (
           <div style={{ display: 'grid', gap: '12px' }}>
@@ -730,19 +730,19 @@ export default function Receptionist() {
           textAlign: 'center'
         }}>
           <div style={{ fontSize: '1.6rem', fontWeight: '700', marginBottom: '8px' }}>
-            ?? MedFlow
+            🏥 MedFlow
           </div>
           <div style={{ fontSize: '0.85rem', opacity: '0.8' }}>
-            Espace R�ceptionniste
+            Espace Réceptionniste
           </div>
         </div>
 
         {/* Navigation */}
         <nav style={{ flex: 1, padding: '20px 0' }}>
           {[
-              { id: 'dashboard', label: 'Tableau de bord', icon: '??' },
-              { id: 'appointments', label: 'Rendez-vous', icon: '??' },
-              { id: 'invoices', label: 'Factures', icon: '??' }
+              { id: 'dashboard', label: 'Tableau de bord', icon: '📊' },
+              { id: 'appointments', label: 'Rendez-vous', icon: '📅' },
+              { id: 'invoices', label: 'Factures', icon: '💰' }
             ].map(item => (
             <button 
               key={item.id}
@@ -791,7 +791,7 @@ export default function Receptionist() {
               {user?.firstName} {user?.lastName}
             </div>
             <div style={{ fontSize: '0.85rem', opacity: '0.8' }}>
-              R�ceptionniste
+              Réceptionniste
             </div>
             {user?.department && (
               <div style={{ fontSize: '0.8rem', opacity: '0.7' }}>
@@ -812,7 +812,7 @@ export default function Receptionist() {
               fontWeight: '600'
             }}
           >
-            ?? Se d�connecter
+            🚪 Se déconnecter
           </button>
         </div>
       </div>
@@ -835,9 +835,9 @@ export default function Receptionist() {
           boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)'
         }}>
           <h2 style={{ margin: '0', color: '#2d3748', fontSize: '1.4rem' }}>
-            {activeSection === 'dashboard' && '?? Tableau de bord'}
-            {activeSection === 'appointments' && '?? Gestion des rendez-vous'}
-            {activeSection === 'patientView' && selectedPatient && `?? ${selectedPatient.firstName} ${selectedPatient.lastName}`}
+            {activeSection === 'dashboard' && '📊 Tableau de bord'}
+            {activeSection === 'appointments' && '📅 Gestion des rendez-vous'}
+            {activeSection === 'patientView' && selectedPatient && `👤 ${selectedPatient.firstName} ${selectedPatient.lastName}`}
           </h2>
           <div style={{ color: '#718096', fontSize: '0.9rem' }}>
             {new Date().toLocaleDateString('fr-FR', { 
