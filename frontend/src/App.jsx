@@ -254,7 +254,7 @@ function Admin() {
         updateData.password = newUser.password;
       }
 
-      const response = await fetch(`http://localhost:3002/admin/users/${selectedUser.id}`, {
+      const response = await fetch(`${API_BASE_URL}/admin/users/${selectedUser.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -298,7 +298,7 @@ function Admin() {
     }
     
     try {
-      const response = await fetch(`http://localhost:3002/admin/users/${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/admin/users/${userId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -382,7 +382,7 @@ function Admin() {
     setLoading(true);
     
     try {
-      const response = await fetch(`http://localhost:3002/clinics/${clinicId}/assign-user/${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/clinics/${clinicId}/assign-user/${userId}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -410,7 +410,7 @@ function Admin() {
     
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:3002/clinics/unassign-user/${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/clinics/unassign-user/${userId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

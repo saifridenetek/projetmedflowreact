@@ -3,6 +3,9 @@ import { useAuth } from './contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { appointmentService, userService, consultationService, prescriptionService, paymentService } from './services/api';
 
+// Configuration de l'URL de l'API depuis les variables d'environnement
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3002';
+
 export default function Receptionist() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -33,7 +36,7 @@ export default function Receptionist() {
 
   const renderReceptionistDashboard = () => (
     <div style={{ padding: '30px' }}>
-      <h1 style={{ margin: '0 0 10px 0', color: '#2d3748', fontSize: '1.8rem' }}>Tableau de bord réceptionniste</h1>
+      <h1 style={{ margin: '0 0 10px 0', color: '#2d3748', fontSize: '1.8rem' }}>Tableau de bord rï¿½ceptionniste</h1>
       <p style={{ color: '#718096', marginBottom: '30px' }}>Bienvenue, {user?.firstName} {user?.lastName}</p>
       
       {/* Cartes statistiques */}
@@ -54,7 +57,7 @@ export default function Receptionist() {
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
             <span style={{ fontSize: '2rem', marginRight: '15px' }}>??</span>
             <div>
-              <h3 style={{ margin: '0', color: '#ff9800', fontSize: '0.9rem', fontWeight: '600' }}>RDV PROGRAMMÉS</h3>
+              <h3 style={{ margin: '0', color: '#ff9800', fontSize: '0.9rem', fontWeight: '600' }}>RDV PROGRAMMï¿½S</h3>
               <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2d3748' }}>{appointments.length}</div>
             </div>
           </div>
@@ -76,7 +79,7 @@ export default function Receptionist() {
           </div>
         </div>
       </div>
-      {/* Section agenda du jour (affiché seulement si des rendez-vous existent) */}
+      {/* Section agenda du jour (affichï¿½ seulement si des rendez-vous existent) */}
       {appointments.length > 0 && (
         <div style={{
           background: 'white',
@@ -91,11 +94,11 @@ export default function Receptionist() {
               {appointments.map(appt => (
                 <li key={appt.id} style={{ padding: '12px 0', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <strong>{appt.patient?.firstName} {appt.patient?.lastName}</strong> — {new Date(appt.appointment_datetime).toLocaleString('fr-FR')}
+                    <strong>{appt.patient?.firstName} {appt.patient?.lastName}</strong> ï¿½ {new Date(appt.appointment_datetime).toLocaleString('fr-FR')}
                   </div>
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                     <div style={{ marginRight: '8px', fontSize: '0.9rem', color: appt.paid ? '#10b981' : '#64748b', fontWeight: 700 }}>
-                      {appt.paid ? 'Payé' : 'Non payé'}
+                      {appt.paid ? 'Payï¿½' : 'Non payï¿½'}
                     </div>
                     <button onClick={async () => { await handleOpenPatientConsultations(appt.patient); }} style={{ padding: '6px 8px', background: '#10b981', color: 'white', border: 'none', borderRadius: '6px' }}>Consultations</button>
                     <button onClick={async () => { await handleOpenPatientPrescriptions(appt.patient); }} style={{ padding: '6px 8px', background: '#f59e0b', color: 'white', border: 'none', borderRadius: '6px' }}>Ordonnances</button>
@@ -225,19 +228,19 @@ export default function Receptionist() {
         notes: ''
       });
       fetchAppointments();
-      alert('Rendez-vous créé avec succès !');
+      alert('Rendez-vous crï¿½ï¿½ avec succï¿½s !');
     } catch (error) {
-      console.error('Erreur lors de la création du rendez-vous:', error);
-      alert('Erreur lors de la création du rendez-vous');
+      console.error('Erreur lors de la crï¿½ation du rendez-vous:', error);
+      alert('Erreur lors de la crï¿½ation du rendez-vous');
     }
   };
 
   const handleDeleteAppointment = async (id) => {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?')) {
+    if (confirm('ï¿½tes-vous sï¿½r de vouloir supprimer ce rendez-vous ?')) {
       try {
         await appointmentService.delete(id);
         fetchAppointments();
-        alert('Rendez-vous supprimé avec succès !');
+        alert('Rendez-vous supprimï¿½ avec succï¿½s !');
       } catch (error) {
         console.error('Erreur lors de la suppression:', error);
         alert('Erreur lors de la suppression');
@@ -257,11 +260,11 @@ export default function Receptionist() {
           fetchAppointments();
         }, 5000);
       } else {
-        alert('Impossible de créer la session de paiement');
+        alert('Impossible de crï¿½er la session de paiement');
       }
     } catch (err) {
-      console.error('Erreur création paiement', err);
-      alert('Erreur lors de la création du paiement');
+      console.error('Erreur crï¿½ation paiement', err);
+      alert('Erreur lors de la crï¿½ation du paiement');
     }
   };
 
@@ -278,7 +281,7 @@ export default function Receptionist() {
   };
 
   const renderAppointments = () => {
-    // Charger les données si pas encore fait
+    // Charger les donnï¿½es si pas encore fait
     if (appointments.length === 0 && !loading) {
       fetchAppointments();
       fetchUsers();
@@ -312,7 +315,7 @@ export default function Receptionist() {
             boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
             marginBottom: '30px'
           }}>
-            <h3 style={{ marginTop: '0', color: '#2d3748' }}>Créer un nouveau rendez-vous</h3>
+            <h3 style={{ marginTop: '0', color: '#2d3748' }}>Crï¿½er un nouveau rendez-vous</h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
               <div>
                 <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#374151' }}>
@@ -330,7 +333,7 @@ export default function Receptionist() {
                     fontSize: '16px'
                   }}
                 >
-                  <option value="">Sélectionner un patient</option>
+                  <option value="">Sï¿½lectionner un patient</option>
                   {patients.map(patient => (
                     <option key={patient.id} value={patient.id}>
                       {patient.firstName} {patient.lastName}
@@ -355,7 +358,7 @@ export default function Receptionist() {
                     fontSize: '16px'
                   }}
                 >
-                  <option value="">Sélectionner un docteur</option>
+                  <option value="">Sï¿½lectionner un docteur</option>
                   {doctors.map(doctor => (
                     <option key={doctor.id} value={doctor.id}>
                       Dr. {doctor.firstName} {doctor.lastName}
@@ -419,7 +422,7 @@ export default function Receptionist() {
                   borderRadius: '8px',
                   fontSize: '16px'
                 }}
-                placeholder="Ex: Consultation générale, contrôle..."
+                placeholder="Ex: Consultation gï¿½nï¿½rale, contrï¿½le..."
               />
             </div>
 
@@ -439,7 +442,7 @@ export default function Receptionist() {
                   fontSize: '16px',
                   resize: 'vertical'
                 }}
-                placeholder="Notes supplémentaires..."
+                placeholder="Notes supplï¿½mentaires..."
               />
             </div>
 
@@ -457,7 +460,7 @@ export default function Receptionist() {
                   fontWeight: '600'
                 }}
               >
-                Créer le rendez-vous
+                Crï¿½er le rendez-vous
               </button>
             </div>
           </form>
@@ -485,7 +488,7 @@ export default function Receptionist() {
             </div>
           ) : appointments.length === 0 ? (
             <div style={{ padding: '40px', textAlign: 'center' }}>
-              <p style={{ color: '#718096' }}>Aucun rendez-vous trouvé</p>
+              <p style={{ color: '#718096' }}>Aucun rendez-vous trouvï¿½</p>
             </div>
           ) : (
             <div style={{ padding: '20px' }}>
@@ -513,7 +516,7 @@ export default function Receptionist() {
                       </div>
                     </div>
                     <div style={{ color: '#718096', fontSize: '0.9rem' }}>
-                      ?? {new Date(appointment.appointment_datetime).toLocaleDateString('fr-FR')} à {new Date(appointment.appointment_datetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                      ?? {new Date(appointment.appointment_datetime).toLocaleDateString('fr-FR')} ï¿½ {new Date(appointment.appointment_datetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                     </div>
                     <div style={{ color: '#718096', fontSize: '0.9rem', marginTop: '5px' }}>
                       ?? {appointment.reason}
@@ -552,21 +555,21 @@ export default function Receptionist() {
   const renderPatients = () => (
     <div style={{ padding: '30px' }}>
       <h1 style={{ margin: '0 0 30px 0', color: '#2d3748' }}>Accueil des patients</h1>
-      <p>Section d'accueil des patients en développement...</p>
+      <p>Section d'accueil des patients en dï¿½veloppement...</p>
     </div>
   );
 
   const renderDoctors = () => (
     <div style={{ padding: '30px' }}>
-      <h1 style={{ margin: '0 0 30px 0', color: '#2d3748' }}>Planning des médecins</h1>
-      <p>Section de planning des médecins en développement...</p>
+      <h1 style={{ margin: '0 0 30px 0', color: '#2d3748' }}>Planning des mï¿½decins</h1>
+      <p>Section de planning des mï¿½decins en dï¿½veloppement...</p>
     </div>
   );
 
   const renderFiles = () => (
     <div style={{ padding: '30px' }}>
       <h1 style={{ margin: '0 0 30px 0', color: '#2d3748' }}>Dossiers patients</h1>
-      <p>Section des dossiers patients en développement...</p>
+      <p>Section des dossiers patients en dï¿½veloppement...</p>
     </div>
   );
 
@@ -574,8 +577,8 @@ export default function Receptionist() {
     <div style={{ padding: '30px' }}>
       <h1 style={{ margin: '0 0 20px 0', color: '#2d3748' }}>{selectedPatient?.firstName} {selectedPatient?.lastName}</h1>
       <div style={{ marginBottom: '15px', color: '#64748b' }}>
-        <div><strong>Email:</strong> {selectedPatient?.email || '—'}</div>
-        <div><strong>Téléphone:</strong> {selectedPatient?.phone || '—'}</div>
+        <div><strong>Email:</strong> {selectedPatient?.email || 'ï¿½'}</div>
+        <div><strong>Tï¿½lï¿½phone:</strong> {selectedPatient?.phone || 'ï¿½'}</div>
       </div>
 
       <div style={{ display: 'grid', gap: '20px' }}>
@@ -583,12 +586,12 @@ export default function Receptionist() {
           <div style={{ background: 'white', padding: '20px', borderRadius: '8px' }}>
             <h3>Consultations</h3>
             {loadingPatientData ? <p>Chargement...</p> : (
-              patientConsultations.length === 0 ? <p>Aucune consultation trouvée.</p> : (
+              patientConsultations.length === 0 ? <p>Aucune consultation trouvï¿½e.</p> : (
                 <ul style={{ listStyle: 'none', padding: 0 }}>
                   {patientConsultations.map(c => (
                     <li key={c.id} style={{ padding: '8px 0', borderBottom: '1px solid #f1f5f9' }}>
                       <div style={{ fontWeight: 700 }}>{c.doctor?.firstName} {c.doctor?.lastName}</div>
-                      <div style={{ color: '#64748b' }}>{new Date(c.createdAt).toLocaleString('fr-FR')} — {c.diagnosis || '—'}</div>
+                      <div style={{ color: '#64748b' }}>{new Date(c.createdAt).toLocaleString('fr-FR')} ï¿½ {c.diagnosis || 'ï¿½'}</div>
                       {c.notes && <div style={{ marginTop: '6px' }}>{c.notes}</div>}
                     </li>
                   ))}
@@ -602,12 +605,12 @@ export default function Receptionist() {
           <div style={{ background: 'white', padding: '20px', borderRadius: '8px' }}>
             <h3>Ordonnances</h3>
             {loadingPatientData ? <p>Chargement...</p> : (
-              patientPrescriptions.length === 0 ? <p>Aucune ordonnance trouvée.</p> : (
+              patientPrescriptions.length === 0 ? <p>Aucune ordonnance trouvï¿½e.</p> : (
                 <ul style={{ listStyle: 'none', padding: 0 }}>
                   {patientPrescriptions.map(p => (
                     <li key={p.id} style={{ padding: '8px 0', borderBottom: '1px solid #f1f5f9' }}>
                       <div style={{ fontWeight: 700 }}>{p.doctor?.firstName} {p.doctor?.lastName}</div>
-                      <div style={{ color: '#64748b' }}>{new Date(p.createdAt).toLocaleString('fr-FR')} — {p.medication}</div>
+                      <div style={{ color: '#64748b' }}>{new Date(p.createdAt).toLocaleString('fr-FR')} ï¿½ {p.medication}</div>
                       <div style={{ marginTop: '6px' }}>{p.dosage}</div>
                       <div style={{ marginTop: '6px' }}>
                         <button onClick={async () => {
@@ -623,10 +626,10 @@ export default function Receptionist() {
                             a.remove();
                             window.URL.revokeObjectURL(url);
                           } catch (err) {
-                            console.error('Erreur téléchargement PDF', err);
-                            alert('Erreur lors du téléchargement du PDF');
+                            console.error('Erreur tï¿½lï¿½chargement PDF', err);
+                            alert('Erreur lors du tï¿½lï¿½chargement du PDF');
                           }
-                        }} style={{ padding: '6px 10px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '6px' }}>Télécharger PDF</button>
+                        }} style={{ padding: '6px 10px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '6px' }}>Tï¿½lï¿½charger PDF</button>
                       </div>
                     </li>
                   ))}
@@ -660,15 +663,15 @@ export default function Receptionist() {
     return (
       <div style={{ padding: '30px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <h1 style={{ margin: '0', color: '#2d3748' }}>Factures — Payées</h1>
+          <h1 style={{ margin: '0', color: '#2d3748' }}>Factures ï¿½ Payï¿½es</h1>
         </div>
         <div style={{ marginBottom: '18px', color: '#64748b' }}>
-          <strong style={{ color: '#2d3748' }}>{paidCount}</strong> factures payées — Total : <strong style={{ color: '#10b981' }}>{totalAmount.toFixed(2)} €</strong>
+          <strong style={{ color: '#2d3748' }}>{paidCount}</strong> factures payï¿½es ï¿½ Total : <strong style={{ color: '#10b981' }}>{totalAmount.toFixed(2)} ï¿½</strong>
         </div>
 
         {paidAppointments.length === 0 ? (
           <div style={{ padding: '20px', background: 'white', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-            <p style={{ color: '#718096' }}>Aucune facture payée pour le moment.</p>
+            <p style={{ color: '#718096' }}>Aucune facture payï¿½e pour le moment.</p>
           </div>
         ) : (
           <div style={{ display: 'grid', gap: '12px' }}>
@@ -679,8 +682,8 @@ export default function Receptionist() {
                   <div style={{ color: '#64748b', fontSize: '0.9rem' }}>{new Date(appt.appointment_datetime).toLocaleString('fr-FR')}</div>
                 </div>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <div style={{ fontWeight: 700, color: '#10b981' }}>{(() => { const a = getAppointmentAmount(appt); return a !== null ? `${a} €` : '—'; })()}</div>
-                  <button onClick={() => openInvoiceDetail(appt)} style={{ padding: '8px 12px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>Voir détail</button>
+                  <div style={{ fontWeight: 700, color: '#10b981' }}>{(() => { const a = getAppointmentAmount(appt); return a !== null ? `${a} ï¿½` : 'ï¿½'; })()}</div>
+                  <button onClick={() => openInvoiceDetail(appt)} style={{ padding: '8px 12px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>Voir dï¿½tail</button>
                 </div>
               </div>
             ))}
@@ -690,14 +693,14 @@ export default function Receptionist() {
         {showInvoiceDetail && selectedInvoice && (
           <div style={{ position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.4)' }} onClick={() => setShowInvoiceDetail(false)}>
             <div style={{ width: '720px', background: 'white', borderRadius: '12px', padding: '20px' }} onClick={(e) => e.stopPropagation()}>
-              <h3 style={{ marginTop: 0 }}>Détail de la facture</h3>
+              <h3 style={{ marginTop: 0 }}>Dï¿½tail de la facture</h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div><strong>Patient</strong><div>{selectedInvoice.patient?.firstName} {selectedInvoice.patient?.lastName}</div></div>
                 <div><strong>Docteur</strong><div>Dr. {selectedInvoice.doctor?.firstName} {selectedInvoice.doctor?.lastName}</div></div>
                 <div><strong>Date</strong><div>{new Date(selectedInvoice.appointment_datetime).toLocaleString('fr-FR')}</div></div>
-                <div><strong>Montant</strong><div>{(() => { const a = getAppointmentAmount(selectedInvoice); return a !== null ? `${a} €` : '—'; })()}</div></div>
-                <div style={{ gridColumn: '1 / -1' }}><strong>Méthode de paiement</strong><div>{selectedInvoice.paymentMethod || 'Stripe / Web'}</div></div>
-                <div style={{ gridColumn: '1 / -1' }}><strong>Notes</strong><div>{selectedInvoice.notes || '—'}</div></div>
+                <div><strong>Montant</strong><div>{(() => { const a = getAppointmentAmount(selectedInvoice); return a !== null ? `${a} ï¿½` : 'ï¿½'; })()}</div></div>
+                <div style={{ gridColumn: '1 / -1' }}><strong>Mï¿½thode de paiement</strong><div>{selectedInvoice.paymentMethod || 'Stripe / Web'}</div></div>
+                <div style={{ gridColumn: '1 / -1' }}><strong>Notes</strong><div>{selectedInvoice.notes || 'ï¿½'}</div></div>
               </div>
               <div style={{ marginTop: '18px', textAlign: 'right' }}>
                 <button onClick={() => setShowInvoiceDetail(false)} style={{ padding: '10px 16px', background: '#6b7280', color: 'white', border: 'none', borderRadius: '8px' }}>Fermer</button>
@@ -730,7 +733,7 @@ export default function Receptionist() {
             ?? MedFlow
           </div>
           <div style={{ fontSize: '0.85rem', opacity: '0.8' }}>
-            Espace Réceptionniste
+            Espace Rï¿½ceptionniste
           </div>
         </div>
 
@@ -788,7 +791,7 @@ export default function Receptionist() {
               {user?.firstName} {user?.lastName}
             </div>
             <div style={{ fontSize: '0.85rem', opacity: '0.8' }}>
-              Réceptionniste
+              Rï¿½ceptionniste
             </div>
             {user?.department && (
               <div style={{ fontSize: '0.8rem', opacity: '0.7' }}>
@@ -809,7 +812,7 @@ export default function Receptionist() {
               fontWeight: '600'
             }}
           >
-            ?? Se déconnecter
+            ?? Se dï¿½connecter
           </button>
         </div>
       </div>

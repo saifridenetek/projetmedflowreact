@@ -3,6 +3,9 @@ import { useAuth } from './contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { profileService, consultationService, prescriptionService } from './services/api';
 
+// Configuration de l'URL de l'API depuis les variables d'environnement
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3002';
+
 export default function Patient() {
   const { user, logout, refreshUser } = useAuth();
   const navigate = useNavigate();
@@ -253,7 +256,7 @@ export default function Patient() {
             }}>
               {user?.photo ? (
                 <img
-                  src={`http://localhost:3002/uploads/profiles/${user.photo}`}
+                  src={`${API_BASE_URL}/uploads/profiles/${user.photo}`}
                   alt="Avatar"
                   style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
                 />
@@ -317,7 +320,7 @@ export default function Patient() {
             }}>
               {user?.photo ? (
                 <img
-                  src={`http://localhost:3002/uploads/profiles/${user.photo}`}
+                  src={`${API_BASE_URL}/uploads/profiles/${user.photo}`}
                   alt="Avatar"
                   style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
                 />
