@@ -76,7 +76,7 @@ function Admin() {
     setLoading(true);
     console.log('Appel API /admin/statistics...');
     try {
-      const response = await fetch('${API_BASE_URL}/admin/statistics', {
+      const response = await fetch(`${API_BASE_URL}/admin/statistics`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -108,7 +108,7 @@ function Admin() {
     
     setLoading(true);
     try {
-      const response = await fetch('${API_BASE_URL}/admin/users', {
+      const response = await fetch(`${API_BASE_URL}/admin/users`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -162,7 +162,7 @@ function Admin() {
       
       console.log('Request body:', requestBody);
 
-      const response = await fetch('${API_BASE_URL}/admin/users', {
+      const response = await fetch(`${API_BASE_URL}/admin/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -322,7 +322,7 @@ function Admin() {
   const fetchClinics = async () => {
     setLoading(true);
     try {
-      const response = await fetch('${API_BASE_URL}/clinics', {
+      const response = await fetch(`${API_BASE_URL}/clinics`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -347,7 +347,7 @@ function Admin() {
     setLoading(true);
     
     try {
-      const response = await fetch('${API_BASE_URL}/clinics', {
+      const response = await fetch(`${API_BASE_URL}/clinics`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
