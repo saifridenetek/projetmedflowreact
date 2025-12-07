@@ -25,4 +25,4 @@ dist-ssr
 
 # Production environment files (contains secrets)
 backend/.env.production
-frontend/.env.production
+# frontend/.env.production - Commenté car VITE_API_URL n'est pas un secret
