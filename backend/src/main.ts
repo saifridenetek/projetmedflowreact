@@ -9,8 +9,36 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   
   // Configuration CORS
+  // Accepter le frontend depuis la variable d'environnement ou localhost en développement
+  const allowedOrigins: (string | RegExp)[] = [
+    process.env.FRONTEND_URL || 'http://localhost:5173',
+    'http://localhost:5173', // Toujours autoriser localhost pour le dev
+  ];
+  
+  // Ajouter toutes les URL Vercel (production + preview)
+  if (process.env.FRONTEND_URL && process.env.FRONTEND_URL.includes('vercel.app')) {
+    allowedOrigins.push(/https:\/\/.*\.vercel\.app$/);
+  }
+  
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: (origin, callback) => {
+      // Autoriser les requêtes sans origin (comme Postman, curl, etc.)
+      if (!origin) return callback(null, true);
+      
+      // Vérifier si l'origin est dans la liste autorisée
+      const isAllowed = allowedOrigins.some(allowed => {
+        if (typeof allowed === 'string') return allowed === origin;
+        if (allowed instanceof RegExp) return allowed.test(origin);
+        return false;
+      });
+      
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        console.log('❌ CORS blocked origin:', origin);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   });
 
