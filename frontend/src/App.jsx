@@ -8,6 +8,9 @@ import { Register } from './Register';
 import { useState, useEffect } from 'react';
 import './App.css';
 
+// Configuration de l'URL de l'API depuis les variables d'environnement
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3002';
+
 // Composant Admin avec navigation et statistiques
 function Admin() {
   const { user, token, logout } = useAuth();
@@ -73,7 +76,7 @@ function Admin() {
     setLoading(true);
     console.log('Appel API /admin/statistics...');
     try {
-      const response = await fetch('http://localhost:3002/admin/statistics', {
+      const response = await fetch('${API_BASE_URL}/admin/statistics', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -105,7 +108,7 @@ function Admin() {
     
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3002/admin/users', {
+      const response = await fetch('${API_BASE_URL}/admin/users', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -159,7 +162,7 @@ function Admin() {
       
       console.log('Request body:', requestBody);
 
-      const response = await fetch('http://localhost:3002/admin/users', {
+      const response = await fetch('${API_BASE_URL}/admin/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -319,7 +322,7 @@ function Admin() {
   const fetchClinics = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3002/clinics', {
+      const response = await fetch('${API_BASE_URL}/clinics', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -344,7 +347,7 @@ function Admin() {
     setLoading(true);
     
     try {
-      const response = await fetch('http://localhost:3002/clinics', {
+      const response = await fetch('${API_BASE_URL}/clinics', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

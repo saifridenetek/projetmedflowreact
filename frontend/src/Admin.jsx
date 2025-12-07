@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { clinicService, userService } from './services/api';
 import './admin.css';
 
+// Configuration de l'URL de l'API depuis les variables d'environnement
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3002';
+
 export function Admin() {
   const { user, token, logout } = useAuth();
   const navigate = useNavigate();
@@ -72,7 +75,7 @@ export function Admin() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:3002/admin/users', {
+      const response = await fetch(`${API_BASE_URL}/admin/users`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -100,7 +103,7 @@ export function Admin() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:3002/admin/statistics', {
+      const response = await fetch(`${API_BASE_URL}/admin/statistics`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -147,7 +150,7 @@ export function Admin() {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:3002/admin/users', {
+      const response = await fetch(`${API_BASE_URL}/admin/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -237,7 +240,7 @@ export function Admin() {
         updateData.password = newUser.password;
       }
 
-      const response = await fetch(`http://localhost:3002/admin/users/${selectedUser.id}`, {
+      const response = await fetch(`${API_BASE_URL}/admin/users/${selectedUser.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -289,7 +292,7 @@ export function Admin() {
     setError(null);
 
     try {
-      const response = await fetch(`http://localhost:3002/admin/users/${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/admin/users/${userId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
