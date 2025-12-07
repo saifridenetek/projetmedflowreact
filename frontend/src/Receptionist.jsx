@@ -79,7 +79,7 @@ export default function Receptionist() {
           </div>
         </div>
       </div>
-      {/* Section agenda du jour (affich� seulement si des rendez-vous existent) */}
+      {/* Section agenda du jour (affiché seulement si des rendez-vous existent) */}
       {appointments.length > 0 && (
         <div style={{
           background: 'white',
@@ -228,19 +228,19 @@ export default function Receptionist() {
         notes: ''
       });
       fetchAppointments();
-      alert('Rendez-vous cr�� avec succ�s !');
+      alert('Rendez-vous crée avec succés !');
     } catch (error) {
-      console.error('Erreur lors de la cr�ation du rendez-vous:', error);
-      alert('Erreur lors de la cr�ation du rendez-vous');
+      console.error('Erreur lors de la création du rendez-vous:', error);
+      alert('Erreur lors de la création du rendez-vous');
     }
   };
 
   const handleDeleteAppointment = async (id) => {
-    if (confirm('�tes-vous s�r de vouloir supprimer ce rendez-vous ?')) {
+    if (confirm('étes-vous sur de vouloir supprimer ce rendez-vous ?')) {
       try {
         await appointmentService.delete(id);
         fetchAppointments();
-        alert('Rendez-vous supprim� avec succ�s !');
+        alert('Rendez-vous supprimé avec succés !');
       } catch (error) {
         console.error('Erreur lors de la suppression:', error);
         alert('Erreur lors de la suppression');
@@ -260,11 +260,11 @@ export default function Receptionist() {
           fetchAppointments();
         }, 5000);
       } else {
-        alert('Impossible de cr�er la session de paiement');
+        alert('Impossible de créer la session de paiement');
       }
     } catch (err) {
-      console.error('Erreur cr�ation paiement', err);
-      alert('Erreur lors de la cr�ation du paiement');
+      console.error('Erreur création paiement', err);
+      alert('Erreur lors de la création du paiement');
     }
   };
 
@@ -281,7 +281,7 @@ export default function Receptionist() {
   };
 
   const renderAppointments = () => {
-    // Charger les donn�es si pas encore fait
+    // Charger les données si pas encore fait
     if (appointments.length === 0 && !loading) {
       fetchAppointments();
       fetchUsers();
@@ -315,7 +315,7 @@ export default function Receptionist() {
             boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
             marginBottom: '30px'
           }}>
-            <h3 style={{ marginTop: '0', color: '#2d3748' }}>Cr�er un nouveau rendez-vous</h3>
+            <h3 style={{ marginTop: '0', color: '#2d3748' }}>Créer un nouveau rendez-vous</h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
               <div>
                 <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#374151' }}>
@@ -333,7 +333,7 @@ export default function Receptionist() {
                     fontSize: '16px'
                   }}
                 >
-                  <option value="">S�lectionner un patient</option>
+                  <option value="">Sélectionner un patient</option>
                   {patients.map(patient => (
                     <option key={patient.id} value={patient.id}>
                       {patient.firstName} {patient.lastName}
@@ -358,7 +358,7 @@ export default function Receptionist() {
                     fontSize: '16px'
                   }}
                 >
-                  <option value="">S�lectionner un docteur</option>
+                  <option value="">Sélectionner un docteur</option>
                   {doctors.map(doctor => (
                     <option key={doctor.id} value={doctor.id}>
                       Dr. {doctor.firstName} {doctor.lastName}
@@ -422,7 +422,7 @@ export default function Receptionist() {
                   borderRadius: '8px',
                   fontSize: '16px'
                 }}
-                placeholder="Ex: Consultation g�n�rale, contr�le..."
+                placeholder="Ex: Consultation générale, controle..."
               />
             </div>
 
@@ -442,7 +442,7 @@ export default function Receptionist() {
                   fontSize: '16px',
                   resize: 'vertical'
                 }}
-                placeholder="Notes suppl�mentaires..."
+                placeholder="Notes supplémentaires..."
               />
             </div>
 
@@ -460,7 +460,7 @@ export default function Receptionist() {
                   fontWeight: '600'
                 }}
               >
-                Cr�er le rendez-vous
+                Créer le rendez-vous
               </button>
             </div>
           </form>
@@ -488,7 +488,7 @@ export default function Receptionist() {
             </div>
           ) : appointments.length === 0 ? (
             <div style={{ padding: '40px', textAlign: 'center' }}>
-              <p style={{ color: '#718096' }}>Aucun rendez-vous trouv�</p>
+              <p style={{ color: '#718096' }}>Aucun rendez-vous trouvée</p>
             </div>
           ) : (
             <div style={{ padding: '20px' }}>
@@ -555,21 +555,21 @@ export default function Receptionist() {
   const renderPatients = () => (
     <div style={{ padding: '30px' }}>
       <h1 style={{ margin: '0 0 30px 0', color: '#2d3748' }}>Accueil des patients</h1>
-      <p>Section d'accueil des patients en d�veloppement...</p>
+      <p>Section d'accueil des patients en développement...</p>
     </div>
   );
 
   const renderDoctors = () => (
     <div style={{ padding: '30px' }}>
-      <h1 style={{ margin: '0 0 30px 0', color: '#2d3748' }}>Planning des m�decins</h1>
-      <p>Section de planning des m�decins en d�veloppement...</p>
+      <h1 style={{ margin: '0 0 30px 0', color: '#2d3748' }}>Planning des médecins</h1>
+      <p>Section de planning des médecins en développement...</p>
     </div>
   );
 
   const renderFiles = () => (
     <div style={{ padding: '30px' }}>
       <h1 style={{ margin: '0 0 30px 0', color: '#2d3748' }}>Dossiers patients</h1>
-      <p>Section des dossiers patients en d�veloppement...</p>
+      <p>Section des dossiers patients en développement...</p>
     </div>
   );
 
@@ -577,8 +577,8 @@ export default function Receptionist() {
     <div style={{ padding: '30px' }}>
       <h1 style={{ margin: '0 0 20px 0', color: '#2d3748' }}>{selectedPatient?.firstName} {selectedPatient?.lastName}</h1>
       <div style={{ marginBottom: '15px', color: '#64748b' }}>
-        <div><strong>Email:</strong> {selectedPatient?.email || '�'}</div>
-        <div><strong>T�l�phone:</strong> {selectedPatient?.phone || '�'}</div>
+        <div><strong>Email:</strong> {selectedPatient?.email || ''}</div>
+        <div><strong>Téléphone:</strong> {selectedPatient?.phone || ''}</div>
       </div>
 
       <div style={{ display: 'grid', gap: '20px' }}>
@@ -586,12 +586,12 @@ export default function Receptionist() {
           <div style={{ background: 'white', padding: '20px', borderRadius: '8px' }}>
             <h3>Consultations</h3>
             {loadingPatientData ? <p>Chargement...</p> : (
-              patientConsultations.length === 0 ? <p>Aucune consultation trouv�e.</p> : (
+              patientConsultations.length === 0 ? <p>Aucune consultation trouvée.</p> : (
                 <ul style={{ listStyle: 'none', padding: 0 }}>
                   {patientConsultations.map(c => (
                     <li key={c.id} style={{ padding: '8px 0', borderBottom: '1px solid #f1f5f9' }}>
                       <div style={{ fontWeight: 700 }}>{c.doctor?.firstName} {c.doctor?.lastName}</div>
-                      <div style={{ color: '#64748b' }}>{new Date(c.createdAt).toLocaleString('fr-FR')} � {c.diagnosis || '�'}</div>
+                      <div style={{ color: '#64748b' }}>{new Date(c.createdAt).toLocaleString('fr-FR')}  {c.diagnosis || ''}</div>
                       {c.notes && <div style={{ marginTop: '6px' }}>{c.notes}</div>}
                     </li>
                   ))}
@@ -605,12 +605,12 @@ export default function Receptionist() {
           <div style={{ background: 'white', padding: '20px', borderRadius: '8px' }}>
             <h3>Ordonnances</h3>
             {loadingPatientData ? <p>Chargement...</p> : (
-              patientPrescriptions.length === 0 ? <p>Aucune ordonnance trouv�e.</p> : (
+              patientPrescriptions.length === 0 ? <p>Aucune ordonnance trouvée.</p> : (
                 <ul style={{ listStyle: 'none', padding: 0 }}>
                   {patientPrescriptions.map(p => (
                     <li key={p.id} style={{ padding: '8px 0', borderBottom: '1px solid #f1f5f9' }}>
                       <div style={{ fontWeight: 700 }}>{p.doctor?.firstName} {p.doctor?.lastName}</div>
-                      <div style={{ color: '#64748b' }}>{new Date(p.createdAt).toLocaleString('fr-FR')} � {p.medication}</div>
+                      <div style={{ color: '#64748b' }}>{new Date(p.createdAt).toLocaleString('fr-FR')} {p.medication}</div>
                       <div style={{ marginTop: '6px' }}>{p.dosage}</div>
                       <div style={{ marginTop: '6px' }}>
                         <button onClick={async () => {
@@ -626,10 +626,10 @@ export default function Receptionist() {
                             a.remove();
                             window.URL.revokeObjectURL(url);
                           } catch (err) {
-                            console.error('Erreur t�l�chargement PDF', err);
-                            alert('Erreur lors du t�l�chargement du PDF');
+                            console.error('Erreur téléchargement PDF', err);
+                            alert('Erreur lors du téléchargement du PDF');
                           }
-                        }} style={{ padding: '6px 10px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '6px' }}>T�l�charger PDF</button>
+                        }} style={{ padding: '6px 10px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '6px' }}>Télécharger PDF</button>
                       </div>
                     </li>
                   ))}
@@ -682,8 +682,8 @@ export default function Receptionist() {
                   <div style={{ color: '#64748b', fontSize: '0.9rem' }}>{new Date(appt.appointment_datetime).toLocaleString('fr-FR')}</div>
                 </div>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <div style={{ fontWeight: 700, color: '#10b981' }}>{(() => { const a = getAppointmentAmount(appt); return a !== null ? `${a} �` : '�'; })()}</div>
-                  <button onClick={() => openInvoiceDetail(appt)} style={{ padding: '8px 12px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>Voir d�tail</button>
+                  <div style={{ fontWeight: 700, color: '#10b981' }}>{(() => { const a = getAppointmentAmount(appt); return a !== null ? `${a} ` : ''; })()}</div>
+                  <button onClick={() => openInvoiceDetail(appt)} style={{ padding: '8px 12px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>Voir détail</button>
                 </div>
               </div>
             ))}
@@ -693,14 +693,14 @@ export default function Receptionist() {
         {showInvoiceDetail && selectedInvoice && (
           <div style={{ position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.4)' }} onClick={() => setShowInvoiceDetail(false)}>
             <div style={{ width: '720px', background: 'white', borderRadius: '12px', padding: '20px' }} onClick={(e) => e.stopPropagation()}>
-              <h3 style={{ marginTop: 0 }}>D�tail de la facture</h3>
+              <h3 style={{ marginTop: 0 }}>Détail de la facture</h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div><strong>Patient</strong><div>{selectedInvoice.patient?.firstName} {selectedInvoice.patient?.lastName}</div></div>
                 <div><strong>Docteur</strong><div>Dr. {selectedInvoice.doctor?.firstName} {selectedInvoice.doctor?.lastName}</div></div>
                 <div><strong>Date</strong><div>{new Date(selectedInvoice.appointment_datetime).toLocaleString('fr-FR')}</div></div>
-                <div><strong>Montant</strong><div>{(() => { const a = getAppointmentAmount(selectedInvoice); return a !== null ? `${a} �` : '�'; })()}</div></div>
-                <div style={{ gridColumn: '1 / -1' }}><strong>M�thode de paiement</strong><div>{selectedInvoice.paymentMethod || 'Stripe / Web'}</div></div>
-                <div style={{ gridColumn: '1 / -1' }}><strong>Notes</strong><div>{selectedInvoice.notes || '�'}</div></div>
+                <div><strong>Montant</strong><div>{(() => { const a = getAppointmentAmount(selectedInvoice); return a !== null ? `${a} ` : ''; })()}</div></div>
+                <div style={{ gridColumn: '1 / -1' }}><strong>Méthode de paiement</strong><div>{selectedInvoice.paymentMethod || 'Stripe / Web'}</div></div>
+                <div style={{ gridColumn: '1 / -1' }}><strong>Notes</strong><div>{selectedInvoice.notes || ''}</div></div>
               </div>
               <div style={{ marginTop: '18px', textAlign: 'right' }}>
                 <button onClick={() => setShowInvoiceDetail(false)} style={{ padding: '10px 16px', background: '#6b7280', color: 'white', border: 'none', borderRadius: '8px' }}>Fermer</button>
