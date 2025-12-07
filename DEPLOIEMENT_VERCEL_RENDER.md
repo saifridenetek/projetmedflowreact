@@ -136,59 +136,205 @@ Password: [Cliquer sur "Reveal" pour voir]
 ### Étape 2 : Déployer Backend sur Render
 
 #### 2.1 Créer Web Service
+
 ```bash
 # 1. Dashboard → "New" → "Web Service"
-# 2. Connecter GitHub repo
-# 3. Configurer :
+# 2. Sélectionner "Build and deploy from a Git repository"
+# 3. Connecter votre repo GitHub : saifridenetek/projetmedflowreact
 
+# 4. Remplir le formulaire :
+
+# ===== INFORMATIONS DE BASE =====
 Name: medflow-backend
-Region: Frankfurt
+Project: [Optionnel - laisser vide ou créer "MedFlow"]
+Environment: Production
+Language: Docker (IMPORTANT - choisir Docker, pas Node)
 Branch: main
+Region: Frankfurt (EU Central)
+
+# ===== CONFIGURATION DOCKER =====
 Root Directory: backend
-Runtime: Node
-Build Command: npm install && npm run build
-Start Command: npm run start:prod
-Plan: Free (limité) ou Starter (7€/mois)
+  - IMPORTANT : Le backend est dans le dossier "backend"
+  
+Dockerfile Path: ./Dockerfile
+  - Chemin relatif vers le Dockerfile
+  
+Docker Build Context Directory: .
+  - Le contexte de build (laisser ".")
+
+Docker Command: [Laisser vide]
+  - Utilise automatiquement le CMD du Dockerfile
+
+# ===== INSTANCE TYPE =====
+# CHOISIR SELON VOTRE BUDGET :
+
+# Option A : GRATUIT (pour tests)
+Instance Type: Free
+  - 512 MB RAM
+  - 0.1 CPU
+  - Mise en veille après 15 min d'inactivité
+  - Premier accès : 30-60 secondes de délai
+  - ⚠️ Pas de zero-downtime deploys
+
+# Option B : PRODUCTION (recommandé)
+Instance Type: Starter ($7/mois)
+  - 512 MB RAM
+  - 0.5 CPU
+  - Pas de mise en veille
+  - Zero Downtime
+  - SSH Access
+  - Support
+
+# ===== CONFIGURATION AVANCÉE =====
+
+Health Check Path: /hello
+  - Render vérifie que votre API répond sur cette route
+  - Notre backend a la route GET /hello qui retourne { message: "Hello from MedFlow API!" }
+
+Pre-Deploy Command: [Laisser vide pour l'instant]
+  - On peut ajouter plus tard : npm run typeorm migration:run
+
+Auto-Deploy: On Commit (activé par défaut)
+  - Redéploiement automatique à chaque push sur GitHub
+
+Build Filters: [Laisser vide]
+  - Optionnel : Ignorer certains fichiers
+
+Disk: [Ne pas ajouter]
+  - Pas nécessaire (on utilise PostgreSQL externe)
+
+Secret Files: [Ne pas ajouter]
+  - On utilise Environment Variables à la place
+
+Registry Credential: No credential
+  - Pas de registre Docker privé
+
+# ===== IMPORTANT =====
+# NE PAS cliquer sur "Deploy web service" tout de suite !
+# D'abord, ajouter les variables d'environnement (voir section suivante)
 ```
 
-#### 2.2 Variables d'environnement
+#### 2.2 Ajouter les Variables d'environnement
 
-**IMPORTANT** : Ces valeurs doivent être ajoutées dans Render Dashboard → Environment Variables
+**AVANT de cliquer sur "Deploy web service"**, ajoutez toutes les variables d'environnement :
 
 ```bash
-# Configuration Node.js
+# Dans le formulaire Render, section "Environment Variables"
+# Cliquer sur "Add Environment Variable" pour chaque variable
+
+# ===== CONFIGURATION NODE.JS =====
+NODE_ENV = production
+PORT = 3002
+
+# ===== BASE DE DONNÉES POSTGRESQL =====
+# Copier ces valeurs depuis Render Dashboard → PostgreSQL → "medflow-db" → Info
+
+DB_HOST = dpg-xxxxx-xxxx.frankfurt-postgres.render.com
+  ⚠️ Remplacer par votre vraie valeur depuis PostgreSQL "Hostname"
+
+DB_PORT = 5432
+
+DB_USERNAME = medflow_user
+  ⚠️ Copier depuis PostgreSQL "Username"
+
+DB_PASSWORD = COPIER_LE_MOT_DE_PASSE_ICI
+  ⚠️ IMPORTANT : Cliquer sur "Reveal" dans PostgreSQL pour voir le password
+  
+DB_DATABASE = medflow
+
+# ===== JWT SECRET =====
+JWT_SECRET = votre_secret_jwt_production_changez_moi_abc123xyz789
+  ⚠️ CHANGER cette valeur ! Utilisez une chaîne aléatoire sécurisée
+  
+JWT_EXPIRES_IN = 1d
+
+# ===== FRONTEND URL =====
+FRONTEND_URL = http://localhost:5173
+  ⚠️ Pour l'instant, mettre localhost
+  ⚠️ Vous mettrez à jour avec l'URL Vercel après déploiement frontend
+
+# ===== STRIPE =====
+STRIPE_SECRET_KEY = sk_test_VOTRE_CLE_STRIPE_ICI
+  ⚠️ Copier depuis Dashboard Stripe → Developers → API keys
+  
+STRIPE_WEBHOOK_SECRET = whsec_VOTRE_WEBHOOK_SECRET
+  ⚠️ Vous ajouterez cette valeur plus tard (après création du webhook)
+  ⚠️ Pour l'instant, mettre : whsec_temporaire
+```
+
+**Comment ajouter les variables** :
+
+1. **Méthode 1 : Une par une** (recommandé)
+   - Cliquer sur **"Add Environment Variable"**
+   - Remplir "Key" (ex: `NODE_ENV`)
+   - Remplir "Value" (ex: `production`)
+   - Répéter pour chaque variable
+
+2. **Méthode 2 : Depuis un fichier .env** (plus rapide)
+   - Cliquer sur **"Add from .env"**
+   - Coller toutes les variables en format `.env`
+   - Render les parse automatiquement
+
+**Exemple de format .env à coller** :
+```env
 NODE_ENV=production
 PORT=3002
-
-# Base de données PostgreSQL
-# Copier les valeurs depuis Render Dashboard → PostgreSQL → Connection Info
 DB_HOST=dpg-xxxxx-xxxx.frankfurt-postgres.render.com
 DB_PORT=5432
 DB_USERNAME=medflow_user
-DB_PASSWORD=COPIER_DEPUIS_RENDER_POSTGRESQL
+DB_PASSWORD=VOTRE_PASSWORD_ICI
 DB_DATABASE=medflow
-
-# JWT Secret - CHANGER cette valeur !
-JWT_SECRET=votre_secret_jwt_production_super_securise_changez_moi
+JWT_SECRET=votre_secret_jwt_production_securise
 JWT_EXPIRES_IN=1d
-
-# URL du frontend Vercel (à mettre à jour après déploiement)
-FRONTEND_URL=https://votre-app.vercel.app
-
-# Stripe - À copier depuis votre Dashboard Stripe
-STRIPE_SECRET_KEY=sk_test_VOTRE_CLE_STRIPE_ICI
-
-# Stripe Webhook Secret (à récupérer après création du webhook sur Stripe)
-# Voir section "Configurer Stripe Webhooks" ci-dessous
-STRIPE_WEBHOOK_SECRET=whsec_VOTRE_WEBHOOK_SECRET_ICI
+FRONTEND_URL=http://localhost:5173
+STRIPE_SECRET_KEY=sk_test_VOTRE_CLE
+STRIPE_WEBHOOK_SECRET=whsec_temporaire
 ```
 
-**Comment ajouter ces variables dans Render** :
-1. Dashboard Render → Sélectionner votre service backend
-2. Cliquer sur **"Environment"** dans le menu de gauche
-3. Cliquer sur **"Add Environment Variable"**
-4. Ajouter chaque variable une par une (Key = Value)
-5. Cliquer sur **"Save Changes"**
+#### 2.3 Déployer le service
+
+Après avoir ajouté toutes les variables :
+
+1. **Vérifier la configuration**
+   - Root Directory: `backend`
+   - Language: `Docker`
+   - Branch: `main`
+   - Health Check Path: `/hello`
+
+2. **Cliquer sur "Deploy web service"**
+
+3. **Attendre le déploiement** (5-10 minutes)
+   - Render va :
+     - Cloner votre repo GitHub
+     - Builder l'image Docker
+     - Lancer le conteneur
+     - Exécuter les health checks
+
+4. **Vérifier les logs**
+   - Dashboard → "Logs" (en temps réel)
+   - Chercher : `Nest application successfully started`
+   - Chercher : `Application is running on: http://0.0.0.0:3002`
+
+5. **Tester l'API**
+   ```powershell
+   # Render vous donne une URL comme :
+   # https://medflow-backend.onrender.com
+   
+   curl https://medflow-backend.onrender.com/hello
+   
+   # Devrait retourner :
+   # {"message":"Hello from MedFlow API!"}
+   ```
+
+#### 2.4 Mettre à jour FRONTEND_URL (plus tard)
+
+Après avoir déployé le frontend sur Vercel :
+
+1. Render Dashboard → Service "medflow-backend"
+2. Aller dans **"Environment"**
+3. Trouver la variable `FRONTEND_URL`
+4. Modifier la valeur : `https://votre-app.vercel.app`
+5. Sauvegarder → Le service redémarre automatiquement
 
 ### Étape 3 : Déployer Frontend sur Vercel (5 min)
 
