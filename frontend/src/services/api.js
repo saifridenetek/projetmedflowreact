@@ -1,6 +1,7 @@
 // Configuration de base de l'API
 // Le backend écoute sur le port 3002 (voir backend/src/main.ts)
-const API_BASE_URL = 'http://localhost:3002';
+// En production, utilise la variable d'environnement VITE_API_URL
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3002';
 
 const apiCall = async (endpoint, options = {}) => {
   const token = localStorage.getItem('token');
