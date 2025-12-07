@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostic MedFlow Admin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2563eb;
+        }
+        h2 {
+            color: #1e40af;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 10px;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        .success {
+            background: #10b981;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            background: #ef4444;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info {
+            background: #f59e0b;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        pre {
+            background: #1f2937;
+            color: #10b981;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f3f4f6;
+            border-left: 4px solid #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Diagnostic MedFlow Admin</h1>
+    
+    <div class="section">
+        <h2>1. Vérification du Token JWT</h2>
+        <button onclick="checkToken()">Vérifier le Token</button>
+        <div id="token-result"></div>
+    </div>
+
+    <div class="section">
+        <h2>2. Test API Backend - Liste des Utilisateurs</h2>
+        <button onclick="testUsers()">Tester GET /admin/users</button>
+        <div id="users-result"></div>
+    </div>
+
+    <div class="section">
+        <h2>3. Test API Backend - Liste des Cliniques</h2>
+        <button onclick="testClinics()">Tester GET /clinics</button>
+        <div id="clinics-result"></div>
+    </div>
+
+    <div class="section">
+        <h2>4. Créer une Clinique de Test</h2>
+        <button onclick="createTestClinic()">Créer Clinique Test</button>
+        <div id="create-result"></div>
+    </div>
+
+    <div class="section">
+        <h2>5. Vérifier la Base de Données</h2>
+        <div class="info">
+            <strong>SQL à exécuter dans pgAdmin :</strong>
+            <pre>-- Vérifier que l'utilisateur est admin
+SELECT id, email, role, "firstName", "lastName" 
+FROM users 
+WHERE email = 'samir@gmail.com';
+
+-- Si le rôle n'est pas 'admin', exécutez :
+UPDATE users SET role = 'admin' WHERE email = 'samir@gmail.com';
+
+-- Vérifier les cliniques existantes
+SELECT * FROM clinics;</pre>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>6. Vider le Cache du Navigateur</h2>
+        <button onclick="clearCache()">Vider LocalStorage + Recharger</button>
+        <div class="info">
+            <strong>Ou manuellement :</strong>
+            <ul>
+                <li>Chrome/Edge : Ctrl + Shift + Delete → Cocher "Images et fichiers en cache" → Effacer</li>
+                <li>Puis : Ctrl + Shift + R (rechargement forcé)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function checkToken() {
+            const resultDiv = document.getElementById('token-result');
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                resultDiv.innerHTML = '<div class="error">❌ Aucun token trouvé ! Vous devez vous connecter.</div>';
+                return;
+            }
+
+            try {
+                const parts = token.split('.');
+                const payload = JSON.parse(atob(parts[1]));
+                
+                let html = '<div class="success">✅ Token trouvé !</div>';
+                html += '<div class="result">';
+                html += '<strong>Email:</strong> ' + payload.email + '<br>';
+                html += '<strong>Rôle:</strong> ' + payload.role + '<br>';
+                html += '<strong>User ID:</strong> ' + payload.sub + '<br>';
+                html += '<strong>Est Admin?</strong> ' + (payload.role === 'admin' ? '✅ OUI' : '❌ NON') + '<br>';
+                html += '</div>';
+                
+                if (payload.role !== 'admin') {
+                    html += '<div class="error">⚠️ Vous n\'êtes pas admin ! Exécutez la requête SQL ci-dessous dans pgAdmin.</div>';
+                    html += '<pre>UPDATE users SET role = \'admin\' WHERE email = \'' + payload.email + '\';</pre>';
+                }
+                
+                resultDiv.innerHTML = html;
+            } catch (e) {
+                resultDiv.innerHTML = '<div class="error">❌ Token invalide : ' + e.message + '</div>';
+            }
+        }
+
+        async function testUsers() {
+            const resultDiv = document.getElementById('users-result');
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                resultDiv.innerHTML = '<div class="error">❌ Pas de token. Connectez-vous d\'abord.</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<div class="info">⏳ Requête en cours...</div>';
+
+            try {
+                const response = await fetch('http://localhost:3002/admin/users', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    let html = '<div class="success">✅ GET /admin/users - Succès !</div>';
+                    html += '<div class="result">';
+                    html += '<strong>Nombre d\'utilisateurs:</strong> ' + data.count + '<br>';
+                    html += '<strong>Utilisateurs:</strong><br>';
+                    data.users.forEach(u => {
+                        html += '- ' + u.firstName + ' ' + u.lastName + ' (' + u.email + ') - Rôle: ' + u.role + '<br>';
+                    });
+                    html += '</div>';
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = '<div class="error">❌ Erreur ' + response.status + ': ' + data.message + '</div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="error">❌ Erreur réseau: ' + error.message + '</div>';
+            }
+        }
+
+        async function testClinics() {
+            const resultDiv = document.getElementById('clinics-result');
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                resultDiv.innerHTML = '<div class="error">❌ Pas de token. Connectez-vous d\'abord.</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<div class="info">⏳ Requête en cours...</div>';
+
+            try {
+                const response = await fetch('http://localhost:3002/clinics', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    let html = '<div class="success">✅ GET /clinics - Succès !</div>';
+                    html += '<div class="result">';
+                    html += '<strong>Nombre de cliniques:</strong> ' + data.count + '<br>';
+                    if (data.clinics && data.clinics.length > 0) {
+                        html += '<strong>Cliniques:</strong><br>';
+                        data.clinics.forEach(c => {
+                            html += '- ' + c.name + ' (TenantID: ' + c.tenantId + ')<br>';
+                            html += '  Adresse: ' + (c.address || 'N/A') + '<br>';
+                            html += '  Utilisateurs: ' + (c.users ? c.users.length : 0) + '<br>';
+                        });
+                    } else {
+                        html += '<div class="info">ℹ️ Aucune clinique n\'existe encore. Créez-en une ci-dessous !</div>';
+                    }
+                    html += '</div>';
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = '<div class="error">❌ Erreur ' + response.status + ': ' + data.message + '</div>';
+                    if (response.status === 403) {
+                        resultDiv.innerHTML += '<div class="error">⚠️ Vous n\'êtes pas admin ! Mettez à jour votre rôle dans la base de données.</div>';
+                    }
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="error">❌ Erreur réseau: ' + error.message + '<br>Vérifiez que le backend est démarré sur le port 3002.</div>';
+            }
+        }
+
+        async function createTestClinic() {
+            const resultDiv = document.getElementById('create-result');
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                resultDiv.innerHTML = '<div class="error">❌ Pas de token. Connectez-vous d\'abord.</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<div class="info">⏳ Création en cours...</div>';
+
+            const clinicData = {
+                name: 'Clinique Test ' + new Date().getTime(),
+                address: '123 Rue de Test, Paris',
+                phone: '01 23 45 67 89',
+                email: 'test@clinic.com',
+                isActive: true
+            };
+
+            try {
+                const response = await fetch('http://localhost:3002/clinics', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(clinicData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    let html = '<div class="success">✅ POST /clinics - Clinique créée avec succès !</div>';
+                    html += '<div class="result">';
+                    html += '<strong>Nom:</strong> ' + data.clinic.name + '<br>';
+                    html += '<strong>TenantID:</strong> <code>' + data.clinic.tenantId + '</code><br>';
+                    html += '<strong>Adresse:</strong> ' + data.clinic.address + '<br>';
+                    html += '</div>';
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = '<div class="error">❌ Erreur ' + response.status + ': ' + data.message + '</div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="error">❌ Erreur réseau: ' + error.message + '</div>';
+            }
+        }
+
+        function clearCache() {
+            if (confirm('Êtes-vous sûr de vouloir vider le cache et vous déconnecter ?')) {
+                localStorage.clear();
+                sessionStorage.clear();
+                alert('Cache vidé ! La page va se recharger.');
+                window.location.reload(true);
+            }
+        }
+
+        // Exécuter automatiquement au chargement
+        window.onload = function() {
+            checkToken();
+        }
+    </script>
+</body>
+</html>

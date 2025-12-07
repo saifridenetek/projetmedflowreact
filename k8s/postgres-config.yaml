@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: medflow
+data:
+  POSTGRES_DB: medflow_production
+  POSTGRES_USER: medflow_user
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+  namespace: medflow
+type: Opaque
+stringData:
+  POSTGRES_PASSWORD: "changeme_production_password_here"
+  # À changer en production avec un mot de passe fort !
