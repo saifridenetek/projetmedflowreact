@@ -3,6 +3,9 @@
 // En production, utilise la variable d'environnement VITE_API_URL
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3002';
 
+// Log pour debug (sera supprimé en production par Vite)
+console.log('🌐 API URL:', API_BASE_URL);
+
 const apiCall = async (endpoint, options = {}) => {
   const token = localStorage.getItem('token');
   const config = {
