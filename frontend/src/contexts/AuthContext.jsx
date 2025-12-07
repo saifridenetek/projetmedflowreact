@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+// Configuration de l'URL de l'API depuis les variables d'environnement
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3002';
+
 const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -48,7 +51,7 @@ export const AuthProvider = ({ children }) => {
   const fetchUserProfile = async () => {
     try {
       console.log('🔍 Tentative de récupération du profil utilisateur...');
-      const response = await fetch('http://localhost:3002/auth/profile', {
+      const response = await fetch(`${API_BASE_URL}/auth/profile`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -77,7 +80,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const storedToken = localStorage.getItem('token');
       if (!storedToken) return;
-      const response = await fetch('http://localhost:3002/auth/profile', {
+      const response = await fetch(`${API_BASE_URL}/auth/profile`, {
         headers: { 'Authorization': `Bearer ${storedToken}` },
       });
       if (response.ok) {
@@ -91,7 +94,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await fetch('http://localhost:3002/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -123,7 +126,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      const response = await fetch('http://localhost:3002/auth/register', {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
