@@ -421,11 +421,12 @@ Les webhooks Stripe permettent à Stripe de notifier votre backend des événeme
 
 2. **Ajouter un endpoint**
    - Cliquez sur **"Add endpoint"** ou **"Ajouter un point de terminaison"**
-   - Dans **"Endpoint URL"**, entrez :
+   - Dans **"Endpoint URL"**, entrez **EXACTEMENT** :
      ```
-     https://medflow-backend.onrender.com/payments/webhook
+     https://medflow-backend-xd2i.onrender.com/payments/webhook
      ```
-   - Remplacez `medflow-backend` par le vrai nom de votre service Render
+   - ⚠️ **Important** : Utilisez l'URL EXACTE de votre backend Render
+   - Pour trouver votre URL : Dashboard Render → Service "medflow-backend-xd2i" → en haut, vous voyez l'URL complète
 
 3. **Sélectionner les événements à écouter**
    

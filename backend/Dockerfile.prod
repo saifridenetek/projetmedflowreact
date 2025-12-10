@@ -1,0 +1,60 @@
+# ====================================================================
+# DOCKERFILE PRODUCTION - Backend NestJS
+# ====================================================================
+# Multi-stage build pour optimiser la taille de l'image
+# ====================================================================
+
+# ==================
+# STAGE 1: Builder
+# ==================
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copier package.json et package-lock.json
+COPY package*.json ./
+
+# Installer les dépendances (y compris dev)
+RUN npm ci
+
+# Copier le code source
+COPY . .
+
+# Construire l'application
+RUN npm run build
+
+# Nettoyer les dev dependencies
+RUN npm prune --production
+
+# ==================
+# STAGE 2: Production
+# ==================
+FROM node:18-alpine
+
+# Créer un utilisateur non-root pour la sécurité
+RUN addgroup -g 1000 medflow && \
+    adduser -D -u 1000 -G medflow medflow
+
+WORKDIR /app
+
+# Copier uniquement les fichiers nécessaires depuis le builder
+COPY --from=builder --chown=medflow:medflow /app/node_modules ./node_modules
+COPY --from=builder --chown=medflow:medflow /app/dist ./dist
+COPY --from=builder --chown=medflow:medflow /app/package*.json ./
+
+# Créer le dossier uploads avec les bonnes permissions
+RUN mkdir -p /app/uploads/profiles && \
+    chown -R medflow:medflow /app/uploads
+
+# Passer à l'utilisateur non-root
+USER medflow
+
+# Exposer le port
+EXPOSE 3002
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3002/hello', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Démarrer l'application
+CMD ["node", "dist/main.js"]
